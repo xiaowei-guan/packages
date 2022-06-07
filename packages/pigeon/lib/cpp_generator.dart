@@ -123,7 +123,7 @@ void _writeCodecSource(Indent indent, Api api, Root root) {
           indent.scoped('{', '}', () {
             indent.writeln('stream->WriteByte(${customClass.enumeration});');
             indent.writeln(
-                'WriteValue(std::any_cast<${customClass.name}>(*custom_value).ToEncodableMap(), stream);');
+                'WriteValue(flutter::EncodableValue(std::any_cast<${customClass.name}>(*custom_value).ToEncodableMap()), stream);');
             indent.writeln('return;');
           });
         }
@@ -492,7 +492,7 @@ const flutter::StandardMessageCodec& ${api.name}::GetCodec() {
                     indent.scoped('{', '}', () {
                       indent.writeln(
                           'wrapped.insert(std::make_pair(flutter::EncodableValue("${Keys.error}"), WrapError("$argName unexpectedly null.")));');
-                      indent.writeln('reply(wrapped);');
+                      indent.writeln('reply(flutter::EncodableValue(wrapped));');
                       indent.writeln('return;');
                     });
                   }
@@ -541,7 +541,7 @@ $prefix\t}${indent.newline}''';
               if (method.isAsynchronous) {
                 methodArgument.add(
                   '[&wrapped, &reply]($returnTypeName output) {${indent.newline}'
-                  '${_wrapResponse('\treply(wrapped);${indent.newline}', method.returnType)}'
+                  '${_wrapResponse('\treply(flutter::EncodableValue(wrapped));${indent.newline}', method.returnType)}'
                   '}',
                 );
               }
@@ -559,11 +559,11 @@ $prefix\t}${indent.newline}''';
               indent.writeln(
                   'wrapped.insert(std::make_pair(flutter::EncodableValue("${Keys.error}"), WrapError(exception.what())));');
               if (method.isAsynchronous) {
-                indent.writeln('reply(wrapped);');
+                indent.writeln('reply(flutter::EncodableValue(wrapped));');
               }
             });
             if (!method.isAsynchronous) {
-              indent.writeln('reply(wrapped);');
+              indent.writeln('reply(flutter::EncodableValue(wrapped));');
             }
           });
         });
