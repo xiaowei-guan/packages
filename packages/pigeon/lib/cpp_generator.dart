@@ -166,7 +166,7 @@ template<class T> class ErrorOr {
 \tconst FlutterError& error() const { return std::get<FlutterError>(v); };
  private:
 \tErrorOr() = default;
-\tfriend class ErrorOr;
+\ttemplate<typename U> friend class ErrorOr;
 };
 ''');
 }
